@@ -34,7 +34,7 @@ router.post('/', (req, res) => {
     image
   };
 
-  db.seats.push(newConcert);
+  db.concerts.push(newConcert);
   res.status(201).json({message: 'OK'});
 });
 router.put('/:id', (req, res) => {
