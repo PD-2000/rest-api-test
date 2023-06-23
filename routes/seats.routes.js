@@ -25,6 +25,10 @@ router.post('/', (req, res) => {
   if(!hasRequiredFields)
     return res.status(400).json({message: 'Missing required fields in request body'});
 
+  const isSeatTaken = db.seats.some((item) => item.seat === seat && item.day === day);
+  if(isSeatTaken)
+    return res.status(409).json({message: 'The slot is already taken...'});
+
   const newSeat = {
     id: shortid(),
     day,
