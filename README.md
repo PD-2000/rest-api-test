@@ -1,2 +1,2 @@
-https://replit.com/@PlantacjaBetonu/rest-api-test
+https://rest-api-test--plantacjabetonu.repl.co/
 # rest-api-test
