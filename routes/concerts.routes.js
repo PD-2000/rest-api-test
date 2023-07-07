@@ -1,69 +1,12 @@
 const express = require('express');
-const shortid = require('shortid');
-const db = require('../db');
 const router = express.Router();
+const ConcertController = require('../controllers/concerts.controller');
 
-router.get('/', (req, res) => {
-  res.json(db.concerts);
-});
-router.get('/random', (req, res) => {
-  const randomIndex = Math.floor(Math.random() * db.concerts.length);
-  const randomConcerts = db.concerts[randomIndex];
-  res.json(randomConcerts);
-});
-router.get('/:id', (req, res) => {
-  const id = req.params.id;
-  const concert = db.concerts.find((item) => item.id === id);
-  if(!concert)
-    return res.status(404).json({message: 'Concert not found'});
-
-  res.json(concert);
-});
-router.post('/', (req, res) => {
-  const {performer, genre, price, day, image} = req.body;
-  const hasRequiredFields = performer && genre && price && day && image;
-  if(!hasRequiredFields)
-    return res.status(400).json({message: 'Missing required fields in request body'});
-
-  const newConcert = {
-    id: shortid(),
-    performer,
-    genre,
-    price,
-    day,
-    image
-  };
-
-  db.concerts.push(newConcert);
-  res.status(201).json({message: 'OK'});
-});
-router.put('/:id', (req, res) => {
-  const id = req.params.id;
-  const {performer, genre, price, day, image} = req.body;
-  const concert = db.concerts.find((item) => item.id === id);
-  if(!concert)
-    return res.status(404).json({message: 'Concert not found'});
-
-  const hasRequiredFields = performer && genre && price && day && image;
-  if(!hasRequiredFields)
-    return res.status(400).json({message: 'Missing required fields in request body'});
-
-  concert.performer = performer;
-  concert.genre = genre;
-  concert.price = price;
-  concert.day = day;
-  concert.image = image;
-
-  res.json({message: 'OK'});
-});
-router.delete('/:id', (req, res) => {
-  const id = req.params.id;
-  const concertIndex = db.concerts.findIndex((item) => item.id === id);
-  if(concertIndex === -1)
-    return res.status(404).json({message: 'Concert not found'});
-
-  db.concerts.splice(concertIndex, 1);
-  res.json({message: 'OK'});
-});
+router.get('/concerts', ConcertController.getAll);
+router.get('/concerts/random', ConcertController.getRandom);
+router.get('/concerts/:id', ConcertController.getById);
+router.post('/concerts', ConcertController.addNew);
+router.put('/concerts/:id', ConcertController.update);
+router.delete('/concerts/:id', ConcertController.delete);
 
 module.exports = router;
