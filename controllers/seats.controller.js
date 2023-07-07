@@ -13,11 +13,11 @@ exports.getRandom = async (req, res) => {
   try{
     const count = await Seat.countDocuments();
     const rand = Math.floor(Math.random() * count);
-    const seat = await Seat.findOne().skip(rand);
-    if(!seat)
-      res.status(404).json({message: 'Not found'});
-    else
-      res.json(seat);
+    const seatFromDB = await seatFromDB.findOne().skip(rand);
+    if(!seatFromDB)
+      return res.status(404).json({message: 'Not found'});
+
+    res.json(seatFromDB);
   }
   catch(err){
     res.json({message: err});
@@ -26,11 +26,11 @@ exports.getRandom = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try{
-    const seat = await Seat.findById(req.params.id);
-    if(!seat)
-      res.status(404).json({message: 'Not found'});
-    else
-      res.json(seat);
+    const seatFromDB = await Seat.findById(req.params.id);
+    if(!seatFromDB)
+      return res.status(404).json({message: 'Not found'});
+
+    res.json(seatFromDB);
   }
   catch(err){
     res.status(500).json({message: err});
@@ -52,17 +52,16 @@ exports.addNew = async (req, res) => {
 exports.update = async (req, res) => {
   const {day, seat, client, email} = req.body;
   try{
-    const sea = await Seat.findById(req.params.id);
-    if(sea){
-      sea.day = day;
-      sea.seat = seat;
-      sea.client = client;
-      sea.email = email;
-      await sea.save();
-      res.json({message: 'OK'});
-    }
-    else
-      res.status(404).json({message: 'Not found...'});
+    const seatFromDB = await Seat.findById(req.params.id);
+    if(!seatFromDB)
+      return res.status(404).json({message: 'Not found...'});
+
+    seatFromDB.day = day;
+    seatFromDB.seat = seat;
+    seatFromDB.client = client;
+    seatFromDB.email = email;
+    await seatFromDB.save();
+    res.json({message: 'OK'});
   }
   catch(err){
     res.status(500).json({message: err});
@@ -71,11 +70,11 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try{
-    const seat = await Seat.findByIdAndDelete(req.params.id);
-    if(seat)
-      res.json({message: 'OK', deletedDocument: seat});
-    else
-      res.status(404).json({message: 'Not found...'});
+    const seatFromDB = await Seat.findByIdAndDelete(req.params.id);
+    if(!seatFromDB)
+      return res.status(404).json({message: 'Not found...'});
+
+    res.json({message: 'OK', deletedDocument: seatFromDB});
   }
   catch(err){
     res.status(500).json({message: err});

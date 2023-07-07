@@ -13,11 +13,11 @@ exports.getRandom = async (req, res) => {
   try{
     const count = await Testimonial.countDocuments();
     const rand = Math.floor(Math.random() * count);
-    const test = await Testimonial.findOne().skip(rand);
-    if(!test)
-      res.status(404).json({message: 'Not found'});
-    else
-      res.json(test);
+    const testimonialFromDB = await Testimonial.findOne().skip(rand);
+    if(!testimonialFromDB)
+      return res.status(404).json({message: 'Not found'});
+
+    res.json(testimonialFromDB);
   }
   catch(err){
     res.json({message: err});
@@ -26,11 +26,11 @@ exports.getRandom = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try{
-    const test = await Testimonial.findById(req.params.id);
-    if(!test)
-      res.status(404).json({message: 'Not found'});
-    else
-      res.json(test);
+    const testimonialFromDB = await Testimonial.findById(req.params.id);
+    if(!testimonialFromDB)
+      return res.status(404).json({message: 'Not found'});
+
+    res.json(testimonialFromDB);
   }
   catch(err){
     res.status(500).json({message: err});
@@ -52,15 +52,14 @@ exports.addNew = async (req, res) => {
 exports.update = async (req, res) => {
   const {author, text} = req.body;
   try{
-    const test = await Testimonial.findById(req.params.id);
-    if(test){
-      test.author = author;
-      test.text = text;
-      await test.save();
-      res.json({message: 'OK'});
-    }
-    else
-      res.status(404).json({message: 'Not found...'});
+    const testimonialFromDB = await Testimonial.findById(req.params.id);
+    if(!testimonialFromDB)
+      return res.status(404).json({message: 'Not found...'});
+
+    testimonialFromDB.author = author;
+    testimonialFromDB.text = text;
+    await testimonialFromDB.save();
+    res.json({message: 'OK'});
   }
   catch(err){
     res.status(500).json({message: err});
@@ -69,11 +68,11 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try{
-    const test = await Testimonial.findByIdAndDelete(req.params.id);
-    if(test)
-      res.json({message: 'OK', deletedDocument: test});
-    else
-      res.status(404).json({message: 'Not found...'});
+    const testimonialFromDB = await Testimonial.findByIdAndDelete(req.params.id);
+    if(!testimonialFromDB)
+      return res.status(404).json({message: 'Not found...'});
+
+    res.json({message: 'OK', deletedDocument: testimonialFromDB});
   }
   catch(err){
     res.status(500).json({message: err});
