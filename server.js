@@ -22,7 +22,7 @@ app.use('/api', testimonialsRoutes);
 app.use('/api', concertsRoutes);
 app.use('/api', seatsRoutes);
 
-mongoose.connect('mongodb+srv://ConcreteFarmer0001:NibUK9NedBXHQpxQ@concretefarmsunited.dknjlmz.mongodb.net/?retryWrites=true&w=majority', {useNewUrlParser: false, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://ConcreteFarmer0001:NibUK9NedBXHQpxQ@concretefarmsunited.dknjlmz.mongodb.net/music_festival?retryWrites=true&w=majority', {useNewUrlParser: false, useUnifiedTopology: true});
 const db = mongoose.connection;
 
 app.get('*', (req, res) => {
