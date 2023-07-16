@@ -1,0 +1,3 @@
+const NODE_ENV = process.env.NODE_ENV;
+
+exports.DB_URI = NODE_ENV === 'production' ? 'url to remote db' : NODE_ENV === 'test' ? 'mongodb+srv://ConcreteFarmer0001:NibUK9NedBXHQpxQ@concretefarmsunited.dknjlmz.mongodb.net/music_festival_test?retryWrites=true&w=majority' : 'mongodb+srv://ConcreteFarmer0001:NibUK9NedBXHQpxQ@concretefarmsunited.dknjlmz.mongodb.net/music_festival?retryWrites=true&w=majority';

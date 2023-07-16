@@ -42,7 +42,7 @@ exports.addNew = async (req, res) => {
     const {author, text} = req.body;
     const newTestimonial = new Testimonial({author: author, text: text});
     await newTestimonial.save();
-    res.json({message: 'OK'});
+    res.status(201).res.json({message: 'OK'});
   }
   catch(err){
     res.status(500).json({message: err});

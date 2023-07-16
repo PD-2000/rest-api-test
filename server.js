@@ -8,6 +8,7 @@ const app = express();
 const testimonialsRoutes = require('./routes/testimonials.routes');
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
+const {DB_URI} = require('./const');
 
 app.use(express.static(path.join(__dirname, '/client/build')));
 app.use(express.urlencoded({extended: false}));
@@ -22,12 +23,23 @@ app.use('/api', testimonialsRoutes);
 app.use('/api', concertsRoutes);
 app.use('/api', seatsRoutes);
 
-mongoose.connect('mongodb+srv://ConcreteFarmer0001:NibUK9NedBXHQpxQ@concretefarmsunited.dknjlmz.mongodb.net/music_festival?retryWrites=true&w=majority', {useNewUrlParser: false, useUnifiedTopology: true});
+mongoose.connect(DB_URI, {useNewUrlParser: false, useUnifiedTopology: true});
 const db = mongoose.connection;
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
+
+app.use((req, res) => {
+  res.status(404).json({message: '404 not found...'})
+});
+
+db.once('open', () => {
+  console.log('Connected to the database');
+});
+
+db.on('error', (err) => console.log('Error ' + err));
+
 
 const server = app.listen(process.env.PORT || 8000, () => console.log('Server is running on port: 8000'));
 const io = socket(server);
@@ -36,11 +48,4 @@ io.on('connection', (socket) => {
   console.log('New socket! - ' + socket.id);
 });
 
-app.use((req, res) => {
-  res.status(404).json({message: '404 not found...'});
-});
-
-db.once('open', () => {
-  console.log('Connected to the database');
-});
-db.on('error', (err) => console.log('Error ' + err));
+module.exports = server;
